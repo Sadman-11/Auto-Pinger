@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>URL Pinger</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+
+      h1 {
+        font-size: 2rem;
+        font-weight: bold;
+        text-align: center;
+      }
+
+      .container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        grid-gap: 2rem;
+        padding: 2rem;
+      }
+
+      .row {
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .offline {
+        background-color: #f8d7da;
+        color: #721c24;
+        border-color: #f5c6cb;
+      }
+
+      .url {
+        font-weight: bold;
+      }
+
+      .status {
+        font-weight: bold;
+        margin-left: auto;
+        font-size: 1.2rem; /* Added font-size to fit within the row */
+        text-align: right; /* Added text-align to align the text to the right */
+      }
+    </style>
+  </head>
+  <body>
+    <h1>URL Pinger</h1>
+
+    <div class="container"></div>
+
+    <script>
+      // Get a reference to the container element
+      const container = document.querySelector(".container");
+
+      // Define the URLs to ping
+      const urls = [
+        "URls"
+      ];
+
+      // Define a function to ping the URLs and update the UI
+      async function pingUrls() {
+        // Loop through each URL and ping it
+        for (const url of urls) {
+          try {
+            const response = await fetch(url);
+            const status = response.status;
+            const row = container.querySelector(`[data-url="${url}"]`);
+            row.classList.remove("offline");
+            row.querySelector(".status").textContent = status;
+          } catch (error) {
+            const row = container.querySelector(`[data-url="${url}"]`);
+            row.classList.add("offline");
+            row.querySelector(".status").textContent = "Offline";
+          }
+        }
+      }
+
+      // Define a function to update the UI with the initial status of the URLs
+      function updateUi() {
+        // Loop through each URL and add a row to the UI
+        for (const url of urls) {
+          const row = document.createElement("div");
+          row.classList.add("row");
+          row.setAttribute("data-url", url);
+
+          const urlCell = document.createElement("div");
+          urlCell.classList.add("url");
+          urlCell.textContent = url;
+          row.appendChild(urlCell);
+
+          const statusCell = document.createElement("div");
+          statusCell.classList.add("status");
+          statusCell.textContent = "Checking...";
+          row.appendChild(statusCell);
+
+          container.appendChild(row);
+        }
+
+        // Ping the URLs every minute and update the UI
+        setInterval(pingUrls, 10 * 1000);
+      }
+
+      // Call the updateUi function when the page is loaded
+      window.addEventListener("load", updateUi);
+    </script>
+  </body>
+</html>
